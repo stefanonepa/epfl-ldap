@@ -63,6 +63,9 @@ dlldata.c
 *.svclog
 *.scc
 
+*.sln
+*.njsproj
+
 # Chutzpah Test files
 _Chutzpah*
 
@@ -194,3 +197,9 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+# WebStorm
+.idea/
+
+#keystore file
+dataStore.json
