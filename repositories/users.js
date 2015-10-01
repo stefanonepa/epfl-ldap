@@ -5,34 +5,30 @@ module.exports = function (context) {
     var usersRepo = {};
     var client = context.client;
     
-    usersRepo.getUserBySciper = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=posixAccount)(|(uniqueIdentifier=' + req.sciper + ')))';
-        executeQuery(req, res, next);
+    usersRepo.getUserBySciper = function (sciper, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', next);
     };
     
-    usersRepo.getUserByName = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=posixAccount)(|(cn=' + req.name + ')))';
-        executeQuery(req, res, next);
+    usersRepo.getUserByName = function (name, next) {
+        req.ldapQuery = '(&(objectClass=posixAccount)(|(cn=' + name + ')))';
+        executeQuery(ldapQuery, next);
     };
     
-    usersRepo.searchUserByName = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=posixAccount)(|(cn=' + req.name + '*)))';
-        executeQuery(req, res, next);
+    usersRepo.searchUserByName = function (name, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + '*)))', next);
     };
     
-    usersRepo.searchUserByPhone = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=posixAccount)(|(telephoneNumber=*' + req.phone + '*)))';
-        executeQuery(req, res, next);
+    usersRepo.searchUserByPhone = function (phone, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', next);
     };
     
-    usersRepo.searchUserByUnitAcronym = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=posixAccount)(|(ou=' + req.unitAcronym + ')))';
-        executeQuery(req, res, next);
+    usersRepo.searchUserByUnitAcronym = function (unitAcronym, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', next);
     };
     
-    var executeQuery = function (req, res, next) {
+    var executeQuery = function (ldapQuery, next) {
         var opts = {
-            filter: req.ldapQuery,
+            filter: ldapQuery,
             scope: 'sub'
         };
         
@@ -47,17 +43,15 @@ module.exports = function (context) {
                     }
                     groupedUser[userIdentifier].push(entry.object);
                 } else {
-                    next(req, res, groupedUser);
+                    next(groupedUser);
                 }
-                //console.log('entry: ' + JSON.stringify(entry.object));
             });
             ldapRes.on('searchReference', function (referral) {
                 //console.log('referral: ' + referral.uris.join());
             });
             ldapRes.on('error', function (err) {
                 console.error('error: ' + err.message);
-                
-                next(req, res, groupedUser);
+                next(groupedUser);
             });
             ldapRes.on('timeout', function (err) {
                 console.error('error: ' + err.message);
@@ -67,11 +61,10 @@ module.exports = function (context) {
                 
                 for (var userEntry in groupedUser) {
                     if (groupedUser.hasOwnProperty(userEntry)) {
-                        users.push(client.options.capability.view(userFactory(groupedUser[userEntry])));
+                        users.push(userFactory(groupedUser[userEntry]));
                     }
                 }
-                next(req, res, users);
-                //console.log('status: ' + result.status);
+                next(users);
             });
         });
     };

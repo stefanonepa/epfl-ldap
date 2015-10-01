@@ -201,5 +201,5 @@ FakesAssemblies/
 # WebStorm
 .idea/
 
-#keystore file
-dataStore.json
+# Visual studio
+*.njsproj

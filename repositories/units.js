@@ -5,24 +5,21 @@ module.exports = function (context) {
     var unitsRepo = {};
     var client = context.client;
     
-    unitsRepo.getUnitById = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=organizationalunit)(|(accountingNumber=' + req.accountingNumber + ')))';
-        executeQuery(req, res, next);
+    unitsRepo.getUnitById = function (accountingNumber, next) {
+        executeQuery('(&(objectClass=organizationalunit)(|(accountingNumber=' + accountingNumber + ')))', next);
     };
     
-    unitsRepo.getUnitByName = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=organizationalunit)(|(ou=' + req.unit + ')))';
-        executeQuery(req, res, next);
+    unitsRepo.getUnitByName = function (unit, next) {
+        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + ')))', next);
     };
     
-    unitsRepo.searchUnitByName = function (req, res, next) {
-        req.ldapQuery = '(&(objectClass=organizationalunit)(|(ou=' + req.unit + '*)))';
-        executeQuery(req, res, next);
+    unitsRepo.searchUnitByName = function (unit, next) {
+        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + '*)))', next);
     };
     
-    var executeQuery = function (req, res, next) {
+    var executeQuery = function (ldapQuery, next) {
         var opts = {
-            filter: req.ldapQuery,
+            filter: ldapQuery,
             scope: 'sub'
         };
         
@@ -37,9 +34,8 @@ module.exports = function (context) {
                     }
                     groupedUnit[unitIdentifier].push(entry.object);
                 } else {
-                    next(req, res, groupedUnit);
+                    next(groupedUnit);
                 }
-                //console.log('entry: ' + JSON.stringify(entry.object));
             });
             ldapRes.on('searchReference', function (referral) {
                 //console.log('referral: ' + referral.uris.join());
@@ -47,7 +43,7 @@ module.exports = function (context) {
             ldapRes.on('error', function (err) {
                 console.error('error: ' + err.message);
                 
-                next(req, res, groupedUnit);
+                next(groupedUnit);
             });
             ldapRes.on('timeout', function (err) {
                 console.error('error: ' + err.message);
@@ -57,11 +53,10 @@ module.exports = function (context) {
                 
                 for (var unitEntry in groupedUnit) {
                     if (groupedUnit.hasOwnProperty(unitEntry)) {
-                        units.push(client.options.capability.view(unitFactory(groupedUnit[unitEntry])));
+                        units.push(unitFactory(groupedUnit[unitEntry]));
                     }
                 }
-                next(req, res, units);
-                //console.log('status: ' + result.status);
+                next(units);
             });
         });
     }

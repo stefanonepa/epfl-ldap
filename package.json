@@ -1,0 +1,30 @@
+{
+  "name": "epfl-ldap",
+  "version": "0.0.1",
+  "description": "epfl-ldap",
+  "main": "context.js",
+  "homepage": "https://github.com/stefanonepa/epfl-ldap",
+  "author": "stefanonepa",
+  "dependencies": {
+    "ldapjs": "^0.7.1"
+  },
+  "devDependencies": {
+    "jshint": "^2.8.0",
+    "mocha": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/stefanonepa/epfl-ldap/issues"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stefanonepa/epfl-ldap.git"
+  },
+  "keywords": [
+    "epfl",
+    "ldap"
+  ],
+  "license": "ISC"
+}
