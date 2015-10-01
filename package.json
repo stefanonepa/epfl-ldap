@@ -20,11 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stefanonepa/epfl-ldap.git"
+    "url": "git+https://github.com/stefanonepa/epfl-ldap.git"
   },
   "keywords": [
     "epfl",
     "ldap"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "scripts": {
+    "test": "mocha"
+  }
 }

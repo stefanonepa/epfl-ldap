@@ -200,6 +200,3 @@ FakesAssemblies/
 
 # WebStorm
 .idea/
-
-# Visual studio
-*.njsproj
