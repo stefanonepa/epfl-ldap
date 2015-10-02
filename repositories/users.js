@@ -6,27 +6,26 @@ module.exports = function (context) {
     var client = context.client;
     
     usersRepo.getUserBySciper = function (sciper, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', next);
+        executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', true, next);
     };
     
     usersRepo.getUserByName = function (name, next) {
-        req.ldapQuery = '(&(objectClass=posixAccount)(|(cn=' + name + ')))';
-        executeQuery(ldapQuery, next);
+        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', false, next);
     };
     
     usersRepo.searchUserByName = function (name, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + '*)))', next);
+        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + '*)))', false, next);
     };
     
     usersRepo.searchUserByPhone = function (phone, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', next);
+        executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', false, next);
     };
     
     usersRepo.searchUserByUnitAcronym = function (unitAcronym, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', next);
+        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', false, next);
     };
     
-    var executeQuery = function (ldapQuery, next) {
+    var executeQuery = function (ldapQuery, isResultUniq, next) {
         var opts = {
             filter: ldapQuery,
             scope: 'sub'
@@ -61,7 +60,11 @@ module.exports = function (context) {
                 
                 for (var userEntry in groupedUser) {
                     if (groupedUser.hasOwnProperty(userEntry)) {
-                        users.push(userFactory(groupedUser[userEntry]));
+                        if (isResultUniq) {
+                            users = userFactory(groupedUser[userEntry]);
+                        } else {
+                            users.push(userFactory(groupedUser[userEntry]));
+                        }
                     }
                 }
                 next(users);

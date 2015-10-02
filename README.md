@@ -6,10 +6,18 @@ Simple wrapper to query the epfl ldap
 ```js 
 var ldapContext = require('epfl-ldap')();
 
-ldapContext.users.getUserBySciper([sciper], function(data) {
-    console.log(JSON.stringify(data));
+ldapContext.users.getUserBySciper([sciper], function(user) {
+    console.log(user.sciper);
+});
+
+ldapContext.users.searchUserByName([name], function(user) {
+    console.log(users[0].sciper);
 });
 ```
+
+## Notes
+
+Carefull with the results formats (Object or Array)
 
 ## TODO
 

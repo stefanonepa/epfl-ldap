@@ -6,18 +6,18 @@ module.exports = function (context) {
     var client = context.client;
     
     unitsRepo.getUnitById = function (accountingNumber, next) {
-        executeQuery('(&(objectClass=organizationalunit)(|(accountingNumber=' + accountingNumber + ')))', next);
+        executeQuery('(&(objectClass=organizationalunit)(|(accountingNumber=' + accountingNumber + ')))', true, next);
     };
     
     unitsRepo.getUnitByName = function (unit, next) {
-        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + ')))', next);
+        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + ')))', false, next);
     };
     
     unitsRepo.searchUnitByName = function (unit, next) {
-        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + '*)))', next);
+        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + '*)))', false, next);
     };
     
-    var executeQuery = function (ldapQuery, next) {
+    var executeQuery = function (ldapQuery, isUniqResult, next) {
         var opts = {
             filter: ldapQuery,
             scope: 'sub'
@@ -53,7 +53,11 @@ module.exports = function (context) {
                 
                 for (var unitEntry in groupedUnit) {
                     if (groupedUnit.hasOwnProperty(unitEntry)) {
-                        units.push(unitFactory(groupedUnit[unitEntry]));
+                        if (isResultUniq) {
+                            units = unitFactory(groupedUnit[unitEntry]); 
+                        } else {
+                            units.push(unitFactory(groupedUnit[unitEntry]));
+                        }
                     }
                 }
                 next(units);

@@ -1,5 +1,5 @@
-﻿var ldapContext = require('./context')();
+﻿var ldapContext = require('ldap-epfl')();
 
-ldapContext.users.getUserBySciper(150938, function(data) {
+ldapContext.users.getUserBySciper(169419, function(data) {
     console.log(JSON.stringify(data));
 });
