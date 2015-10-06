@@ -41,16 +41,6 @@ module.exports = function User(ldapUserArray) {
     
     //All ldap properties
     userModel.optionalProperties = ldapUserArray;
-    
-    userModel.asPublicData = function () {
-        return {
-            displayName: userModel.displayName,
-            username: userModel.username,
-            sciper: userModel.sciper,
-            email: userModel.email,
-            accreds: userModel.accreds
-        };
-    };
-    
+
     return userModel;
 };

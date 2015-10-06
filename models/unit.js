@@ -16,17 +16,6 @@ module.exports = function Unit(ldapUnitArray) {
     
     //All ldap properties
     unitModel.optionalProperties = ldapUnitArray;
-    
-    unitModel.asPublicData = function () {
-        return {
-            cn: unitModel.cn,
-            dn: unitModel.dn,
-            name: unitModel.name,
-            description: unitModel.description,
-            acronym: unitModel.acronym,
-            address: unitModel.address
-        };
-    };
-    
+
     return unitModel;
 };

@@ -3,15 +3,45 @@
 Simple wrapper to query the epfl ldap
 
 ## Usage
-```js 
-var ldapContext = require('epfl-ldap')();
+```js
+/*
+ * Public
+ */
+var publicLdapContext = require('epfl-ldap')();
 
-ldapContext.users.getUserBySciper([sciper], function(user) {
-    console.log(user.sciper);
+publicLdapContext.users.getUserBySciper(169419, function(data) {
+    console.log(JSON.stringify(data, null, 2));
 });
 
-ldapContext.users.searchUserByName([name], function(user) {
-    console.log(users[0].sciper);
+
+/*
+ * Full
+ */
+var fullLdapContext = require('epfl-ldap')();
+fullLdapContext.options.modelsMapper = fullLdapContext.viewModelsMappers.full;
+
+fullLdapContext.users.getUserBySciper(169419, function (data) {
+    console.log(JSON.stringify(data, null, 2));
+});
+
+
+/*
+ * Custom
+ */
+var customLdapContext = require('epfl-ldap')();
+var customModelsMapper = customLdapContext.viewModelsMappers.custom;
+customModelsMapper.userSchema = {
+    displayName: {
+        key: 'displayName'
+    },
+    email: {
+        key: 'email'
+    }
+};
+customLdapContext.options.modelsMapper = customModelsMapper;
+
+customLdapContext.users.getUserBySciper(169419, function (data) {
+    console.log(JSON.stringify(data, null, 2));
 });
 ```
 

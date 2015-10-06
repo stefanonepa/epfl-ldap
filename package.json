@@ -1,12 +1,13 @@
 {
   "name": "epfl-ldap",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "epfl-ldap",
   "main": "context.js",
   "homepage": "https://github.com/stefanonepa/epfl-ldap",
   "author": "stefanonepa",
   "dependencies": {
-    "ldapjs": "^0.7.1"
+    "ldapjs": "^0.7.1",
+    "o-mapper": "^0.1.2"
   },
   "devDependencies": {
     "jshint": "^2.8.0",

@@ -1,13 +1,7 @@
 ﻿'use strict';
-module.exports = function (customOptions) {
+module.exports = function () {
     var ldapOptions = {};
-    
-    ldapOptions.url = 'ldap://ldap.epfl.ch';
-    if (customOptions != undefined) {
-        ldapOptions.searchBase = customOptions.searchBase;
-    } else {
-        ldapOptions.searchBase = 'c=ch';
-    }
-
+    ldapOptions.searchBase = 'c=ch';
+    ldapOptions.modelsMapper = require('./viewModels/public/ModelsMapper')();
     return ldapOptions;
 };

@@ -33,7 +33,7 @@ module.exports = function (context) {
         
         var groupedUser = {};
         
-        client.search(client.options.searchBase, opts, function (err, ldapRes) {
+        client.search(context.options.searchBase, opts, function (err, ldapRes) {
             ldapRes.on('searchEntry', function (entry) {
                 if (typeof entry.json != 'undefined') {
                     var userIdentifier = entry.object.uniqueIdentifier;
@@ -61,9 +61,9 @@ module.exports = function (context) {
                 for (var userEntry in groupedUser) {
                     if (groupedUser.hasOwnProperty(userEntry)) {
                         if (isResultUniq) {
-                            users = userFactory(groupedUser[userEntry]);
+                            users = context.options.modelsMapper.user(userFactory(groupedUser[userEntry]));
                         } else {
-                            users.push(userFactory(groupedUser[userEntry]));
+                            users.push(context.options.modelsMapper.user(userFactory(groupedUser[userEntry])));
                         }
                     }
                 }

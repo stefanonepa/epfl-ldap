@@ -25,7 +25,7 @@ module.exports = function (context) {
         
         var groupedUnit = {};
         
-        client.search(client.options.searchBase, opts, function (err, ldapRes) {
+        client.search(context.options.searchBase, opts, function (err, ldapRes) {
             ldapRes.on('searchEntry', function (entry) {
                 if (typeof entry.json != 'undefined') {
                     var unitIdentifier = entry.object.uniqueIdentifier;
@@ -54,9 +54,9 @@ module.exports = function (context) {
                 for (var unitEntry in groupedUnit) {
                     if (groupedUnit.hasOwnProperty(unitEntry)) {
                         if (isResultUniq) {
-                            units = unitFactory(groupedUnit[unitEntry]); 
+                            units = context.options.modelsMapper.unit(groupedUnit[unitEntry]); 
                         } else {
-                            units.push(unitFactory(groupedUnit[unitEntry]));
+                            units.push(context.options.modelsMapper.unit(groupedUnit[unitEntry]));
                         }
                     }
                 }

@@ -1,12 +1,11 @@
 ﻿'use strict';
-module.exports = function ldapClient(options) {
+module.exports = function ldapClient() {
     var ldap = require('ldapjs');
     var client = ldap.createClient({
-        url: options.url,
+        url: 'ldap://ldap.epfl.ch',
         timeLimit: 1,
         sizeLimit: 10
     });
-    
-    client.options = options;
+
     return client;
 };
