@@ -10,7 +10,7 @@ module.exports = function (context) {
     };
     
     usersRepo.getUserByName = function (name, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', false, next);
+        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', true, next);
     };
     
     usersRepo.searchUserByName = function (name, next) {
@@ -22,7 +22,7 @@ module.exports = function (context) {
     };
     
     usersRepo.searchUserByUnitAcronym = function (unitAcronym, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', false, next);
+        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', true, next);
     };
     
     var executeQuery = function (ldapQuery, isResultUniq, next) {

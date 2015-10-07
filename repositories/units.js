@@ -10,7 +10,7 @@ module.exports = function (context) {
     };
     
     unitsRepo.getUnitByName = function (unit, next) {
-        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + ')))', false, next);
+        executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + ')))', true, next);
     };
     
     unitsRepo.searchUnitByName = function (unit, next) {
@@ -54,9 +54,9 @@ module.exports = function (context) {
                 for (var unitEntry in groupedUnit) {
                     if (groupedUnit.hasOwnProperty(unitEntry)) {
                         if (isUniqResult) {
-                            units = context.options.modelsMapper.unit(groupedUnit[unitEntry]); 
+                            units = context.options.modelsMapper.unit(unitFactory(groupedUnit[unitEntry])); 
                         } else {
-                            units.push(context.options.modelsMapper.unit(groupedUnit[unitEntry]));
+                            units.push(context.options.modelsMapper.unit(unitFactory(groupedUnit[unitEntry])));
                         }
                     }
                 }
