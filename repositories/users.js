@@ -22,7 +22,7 @@ module.exports = function (context) {
     };
     
     usersRepo.searchUserByUnitAcronym = function (unitAcronym, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', true, next);
+        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', false, next);
     };
     
     var executeQuery = function (ldapQuery, isResultUniq, next) {
