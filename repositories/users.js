@@ -10,7 +10,7 @@ module.exports = function (context) {
     };
     
     usersRepo.getUserByName = function (name, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', true, next);
+        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', false, next);
     };
     
     usersRepo.searchUserByName = function (name, next) {
