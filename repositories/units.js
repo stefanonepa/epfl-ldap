@@ -53,7 +53,7 @@ module.exports = function (context) {
                 
                 for (var unitEntry in groupedUnit) {
                     if (groupedUnit.hasOwnProperty(unitEntry)) {
-                        if (isResultUniq) {
+                        if (isUniqResult) {
                             units = context.options.modelsMapper.unit(groupedUnit[unitEntry]); 
                         } else {
                             units.push(context.options.modelsMapper.unit(groupedUnit[unitEntry]));
