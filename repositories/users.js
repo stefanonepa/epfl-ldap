@@ -24,7 +24,26 @@ module.exports = function (context) {
     usersRepo.searchUserByUnitAcronym = function (unitAcronym, next) {
         executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', false, next);
     };
-    
+
+    /* The plural forms always return a list, regarding of whether the search
+     * criterion is unique.
+     */
+    usersRepo.getUsersBySciper = function (sciper, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', false, next);
+    };
+
+    usersRepo.getUsersByName = function (name, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', false, next);
+    };
+
+    usersRepo.getUsersByPhone = function (phone, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', false, next);
+    };
+
+    usersRepo.getUsersByUnitAcronym = function (unitAcronym, next) {
+        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', false, next);
+    };
+
     var executeQuery = function (ldapQuery, isResultUniq, next) {
         var opts = {
             filter: ldapQuery,
