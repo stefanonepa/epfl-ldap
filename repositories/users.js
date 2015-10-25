@@ -6,90 +6,43 @@ module.exports = function (context) {
     var client = context.client;
     
     usersRepo.getUserBySciper = function (sciper, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', true, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', userFactory, context.options.modelsMapper.user, true, next);
     };
     
     usersRepo.getUserByName = function (name, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', userFactory, context.options.modelsMapper.user, false, next);
     };
     
     usersRepo.searchUserByName = function (name, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + '*)))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + '*)))', userFactory, context.options.modelsMapper.user, false, next);
     };
     
     usersRepo.searchUserByPhone = function (phone, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', userFactory, context.options.modelsMapper.user, false, next);
     };
     
     usersRepo.searchUserByUnitAcronym = function (unitAcronym, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', userFactory, context.options.modelsMapper.user, false, next);
     };
 
     /* The plural forms always return a list, regarding of whether the search
      * criterion is unique.
      */
     usersRepo.getUsersBySciper = function (sciper, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', userFactory, context.options.modelsMapper.user, false, next);
     };
 
     usersRepo.getUsersByName = function (name, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(cn=' + name + ')))', userFactory, context.options.modelsMapper.user, false, next);
     };
 
     usersRepo.getUsersByPhone = function (phone, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(telephoneNumber=*' + phone + '*)))', userFactory, context.options.modelsMapper.user, false, next);
     };
 
     usersRepo.getUsersByUnitAcronym = function (unitAcronym, next) {
-        executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(|(ou=' + unitAcronym + ')))', userFactory, context.options.modelsMapper.user, false, next);
     };
-
-    var executeQuery = function (ldapQuery, isResultUniq, next) {
-        var opts = {
-            filter: ldapQuery,
-            scope: 'sub'
-        };
-        
-        var groupedUser = {};
-        
-        client.search(context.options.searchBase, opts, function (err, ldapRes) {
-            ldapRes.on('searchEntry', function (entry) {
-                if (typeof entry.json != 'undefined') {
-                    var userIdentifier = entry.object.uniqueIdentifier;
-                    if (groupedUser[userIdentifier] === undefined) {
-                        groupedUser[userIdentifier] = Array();
-                    }
-                    groupedUser[userIdentifier].push(entry.object);
-                } else {
-                    next(groupedUser);
-                }
-            });
-            ldapRes.on('searchReference', function (referral) {
-                //console.log('referral: ' + referral.uris.join());
-            });
-            ldapRes.on('error', function (err) {
-                console.error('error: ' + err.message);
-                next(groupedUser);
-            });
-            ldapRes.on('timeout', function (err) {
-                console.error('error: ' + err.message);
-            });
-            ldapRes.on('end', function () {
-                var users = Array();
-                
-                for (var userEntry in groupedUser) {
-                    if (groupedUser.hasOwnProperty(userEntry)) {
-                        if (isResultUniq) {
-                            users = context.options.modelsMapper.user(userFactory(groupedUser[userEntry]));
-                        } else {
-                            users.push(context.options.modelsMapper.user(userFactory(groupedUser[userEntry])));
-                        }
-                    }
-                }
-                next(users);
-            });
-        });
-    };
-    
+  
     return usersRepo;
 };

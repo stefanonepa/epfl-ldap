@@ -9,8 +9,6 @@ publicLdapContext.users.getUserBySciper(169419, function(data) {
     console.log(JSON.stringify(data, null, 2));
 });
 
-
-
 /*
  * Full
  */
@@ -20,11 +18,6 @@ fullLdapContext.options.modelsMapper = fullLdapContext.viewModelsMappers.full;
 fullLdapContext.users.getUserBySciper(169419, function (data) {
     console.log(JSON.stringify(data, null, 2));
 });
-
-fullLdapContext.units.getUnitByName('enac-it', function(data) {
-    console.log(JSON.stringify(data, null, 2));
-});
-
 
 /*
  * Custom
