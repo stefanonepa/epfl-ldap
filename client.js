@@ -1,6 +1,4 @@
 ﻿'use strict';
-var NodeCache = require("node-cache");
-var apiCache = new NodeCache();
 
 module.exports = function ldapClient(context) {
 
@@ -56,6 +54,7 @@ module.exports = function ldapClient(context) {
             });
         });
     }
+
     function mapResults(data, objectFactory, modelMapper, next) {
         if (data[0] instanceof Array) {
             next(data.map(function (obj) {
@@ -67,15 +66,15 @@ module.exports = function ldapClient(context) {
     };
 
     client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {  
-        apiCache.get(ldapQuery, function (err, data) {
+        context.memoryCache.get(ldapQuery, function (err, data) {
             if (!err) {
                 if (data == undefined) {
                     realQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(data) {
-                        apiCache.set(ldapQuery, data, function (err, success) {
+                        context.memoryCache.set(ldapQuery, data, function (err, success) {
                             if (!err && success) {
                                 mapResults(data, objectFactory, modelMapper, next);
                             } else {
-                                next({ Error: "aararrggghhh!" });
+                                next(new Error('something bad happened setting the cache'));
                             }
                         });
                     });
@@ -83,7 +82,7 @@ module.exports = function ldapClient(context) {
                     mapResults(data, objectFactory, modelMapper, next);
                 }
             } else {
-                next({ Error: "aararrggghhh!" });
+                next(new Error('something bad happened accessing the cache'));
             }
         });
     };
