@@ -11,7 +11,7 @@ module.exports = function ldapClient(context) {
         sizeLimit: 10
     });
 
-    function cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
+    function realQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
         var groupedObject = {};
         var opts = {
             filter: ldapQuery,
@@ -56,28 +56,31 @@ module.exports = function ldapClient(context) {
             });
         });
     }
+    function mapResults(data, objectFactory, modelMapper, next) {
+        if (data[0] instanceof Array) {
+            next(data.map(function (obj) {
+                return modelMapper(objectFactory(obj));
+            }));
+        } else {
+            next(modelMapper(objectFactory(data)));
+        }
+    };
 
     client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {  
         apiCache.get(ldapQuery, function (err, data) {
             if (!err) {
                 if (data == undefined) {
-                    cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(data) {
+                    realQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(data) {
                         apiCache.set(ldapQuery, data, function (err, success) {
                             if (!err && success) {
-                                if (data[0] instanceof Array) {
-                                    next(data.map(function(obj) {
-                                        return modelMapper(objectFactory(obj));
-                                    }));
-                                } else {
-                                    next(modelMapper(objectFactory(data)));
-                                }
+                                mapResults(data, objectFactory, modelMapper, next);
                             } else {
                                 next({ Error: "aararrggghhh!" });
                             }
                         });
                     });
                 } else {
-                    next(modelMapper(objectFactory(data)));
+                    mapResults(data, objectFactory, modelMapper, next);
                 }
             } else {
                 next({ Error: "aararrggghhh!" });
