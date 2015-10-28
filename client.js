@@ -11,13 +11,12 @@ module.exports = function ldapClient(context) {
         sizeLimit: 10
     });
 
-    function cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, next) { 
+    function cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
+        var groupedObject = {};
         var opts = {
             filter: ldapQuery,
             scope: 'sub'
         };
-        
-        var groupedObject = {};
         
         client.search(context.options.searchBase, opts, function (err, ldapRes) {
             ldapRes.on('searchEntry', function (entry) {
@@ -47,9 +46,9 @@ module.exports = function ldapClient(context) {
                 for (var userEntry in groupedObject) {
                     if (groupedObject.hasOwnProperty(userEntry)) {
                         if (isResultUniq) {
-                            objectsGroup = modelMapper(objectFactory(groupedObject[userEntry]));
+                            objectsGroup = groupedObject[userEntry];
                         } else {
-                            objectsGroup.push(modelMapper(objectFactory(groupedObject[userEntry])));
+                            objectsGroup.push(groupedObject[userEntry]);
                         }
                     }
                 }
@@ -65,14 +64,14 @@ module.exports = function ldapClient(context) {
                     cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(data) {
                         apiCache.set(ldapQuery, data, function (err, success) {
                             if (!err && success) {
-                                next(data);
+                                next(modelMapper(objectFactory(data)));
                             } else {
                                 next({ Error: "aararrggghhh!" });
                             }
                         });
                     });
                 } else {
-                    next(data);
+                    next(modelMapper(objectFactory(data)));
                 }
             } else {
                 next({ Error: "aararrggghhh!" });
