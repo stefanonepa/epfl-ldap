@@ -1,7 +1,7 @@
 ﻿'use strict';
 module.exports = function Unit(ldapUnitArray) {
     var unitModel = {};
-    
+
     unitModel.cn = ldapUnitArray[0].cn;
     unitModel.dn = ldapUnitArray[0].dn;
     unitModel.acronym = ldapUnitArray[0].ou[0];
@@ -16,6 +16,6 @@ module.exports = function Unit(ldapUnitArray) {
     
     //All ldap properties
     unitModel.optionalProperties = ldapUnitArray;
-
+    
     return unitModel;
 };

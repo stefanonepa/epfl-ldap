@@ -64,7 +64,13 @@ module.exports = function ldapClient(context) {
                     cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(data) {
                         apiCache.set(ldapQuery, data, function (err, success) {
                             if (!err && success) {
-                                next(modelMapper(objectFactory(data)));
+                                if (data[0] instanceof Array) {
+                                    next(data.map(function(obj) {
+                                        return modelMapper(objectFactory(obj));
+                                    }));
+                                } else {
+                                    next(modelMapper(objectFactory(data)));
+                                }
                             } else {
                                 next({ Error: "aararrggghhh!" });
                             }
