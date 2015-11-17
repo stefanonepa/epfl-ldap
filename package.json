@@ -6,6 +6,7 @@
   "homepage": "https://github.com/stefanonepa/epfl-ldap",
   "author": "stefanonepa",
   "dependencies": {
+    "epfl-exceptions": "^0.0.3",
     "ldapjs": "^0.7.1",
     "node-cache": "^3.0.0",
     "o-mapper": "^0.1.2"
