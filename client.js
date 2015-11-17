@@ -1,8 +1,10 @@
 ﻿'use strict';
 var NodeCache = require("node-cache");
-var apiCache = new NodeCache();
+var apiCache = new NodeCache({ stdTTL: 43200 }); //==> 1/2 day of ttl
 
 module.exports = function ldapClient(context) {
+    
+
 
     var ldap = require('ldapjs');
     var client = ldap.createClient({
@@ -28,7 +30,7 @@ module.exports = function ldapClient(context) {
                     }
                     groupedObject[objectIdentifier].push(entry.object);
                 } else {
-                    next(groupedObject);
+                    next(null, groupedObject);
                 }
             });
             ldapRes.on('searchReference', function (referral) {
@@ -36,7 +38,7 @@ module.exports = function ldapClient(context) {
             });
             ldapRes.on('error', function (err) {
                 console.error('error: ' + err.message);
-                next(groupedObject);
+                next(err, groupedObject);
             });
             ldapRes.on('timeout', function (err) {
                 console.error('error: ' + err.message);
@@ -53,7 +55,7 @@ module.exports = function ldapClient(context) {
                         }
                     }
                 }
-                next(objectsGroup);
+                next(null, objectsGroup);
             });
         });
     }
@@ -65,17 +67,17 @@ module.exports = function ldapClient(context) {
                     cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(data) {
                         apiCache.set(ldapQuery, data, function (err, success) {
                             if (!err && success) {
-                                next(data);
+                                next(null, data);
                             } else {
-                                next({ Error: "aararrggghhh!" });
+                                next({ Error: "aararrggghhh!" }, null);
                             }
                         });
                     });
                 } else {
-                    next(data);
+                    next(null, data);
                 }
             } else {
-                next({ Error: "aararrggghhh!" });
+                next({ Error: "aararrggghhh!" }, null);
             }
         });
     };

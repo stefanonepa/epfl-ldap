@@ -1,6 +1,6 @@
 {
   "name": "epfl-ldap",
-  "version": "0.1.6",
+  "version": "0.3.0",
   "description": "epfl-ldap",
   "main": "context.js",
   "homepage": "https://github.com/stefanonepa/epfl-ldap",

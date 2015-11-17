@@ -5,7 +5,7 @@
  */
 var publicLdapContext = require('../context')();
 
-publicLdapContext.units.getUnitByName('enac-it', function(data) {
+publicLdapContext.units.getUnitByName('enac-it', function(err, data) {
     console.log(JSON.stringify(data, null, 2));
 });
 
@@ -18,13 +18,13 @@ fullLdapContext.options.modelsMapper = fullLdapContext.viewModelsMappers.full;
 
 
 console.time("first");
-fullLdapContext.units.searchUnitByName('enac', function(data) {
+fullLdapContext.units.searchUnitByName('enac', function(err, data) {
     //console.log(JSON.stringify(data, null, 2));
     console.timeEnd("first");
 });
 
 console.time("second");
-fullLdapContext.units.searchUnitByName('enac', function (data) {
+fullLdapContext.units.searchUnitByName('enac', function (err, data) {
     //console.log(JSON.stringify(data, null, 2));
     console.timeEnd("second");
 });
