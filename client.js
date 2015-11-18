@@ -1,11 +1,9 @@
 ﻿'use strict';
 var NodeCache = require("node-cache");
-var apiCache = new NodeCache({ stdTTL: 43200 }); //==> 1/2 day of ttl
+//var apiCache = new NodeCache({ stdTTL: 43200 }); //==> 1/2 day of ttl
 
 module.exports = function ldapClient(context) {
     
-
-
     var ldap = require('ldapjs');
     var client = ldap.createClient({
         url: 'ldap://ldap.epfl.ch',
@@ -19,9 +17,9 @@ module.exports = function ldapClient(context) {
             scope: 'sub'
         };
         
-        var groupedObject = {};
-        
         client.search(context.options.searchBase, opts, function (err, ldapRes) {
+            var groupedObject = {};
+
             ldapRes.on('searchEntry', function (entry) {
                 if (typeof entry.json != 'undefined') {
                     var objectIdentifier = entry.object.uniqueIdentifier;
@@ -61,11 +59,11 @@ module.exports = function ldapClient(context) {
     }
 
     client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {  
-        apiCache.get(ldapQuery, function (err, data) {
+        context.memoryCache.get(ldapQuery, function (err, data) {
             if (!err) {
                 if (data == undefined) {
-                    cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(data) {
-                        apiCache.set(ldapQuery, data, function (err, success) {
+                    cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(err, data) {
+                        context.memoryCache.set(ldapQuery, data, function (err, success) {
                             if (!err && success) {
                                 next(null, data);
                             } else {
