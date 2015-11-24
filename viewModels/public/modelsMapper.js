@@ -1,12 +1,11 @@
 ﻿'use strict';
 
-var omapper = require('o-mapper');
-
 module.exports = function () {
-    var mapper = {};
+    let omapper = require('o-mapper');
+    let mapper = {};
     
     mapper.user = function(inputModel) {
-        var schema = {
+        let schema = {
             displayName: {
                 key: 'displayName'
             },
@@ -16,8 +15,8 @@ module.exports = function () {
             sciper: {
                 key: 'sciper'
             },
-            email: {
-                key: 'email'
+            emails: {
+                key: 'emails'
             },
             accreds: {
                 key: 'accreds'
@@ -28,7 +27,7 @@ module.exports = function () {
     }
     
     mapper.unit = function (inputModel) {
-        var schema = {
+        let schema = {
             cn: {
                 key: 'cn'
             },

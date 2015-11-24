@@ -1,9 +1,9 @@
 ﻿'use strict';
 module.exports = function (context) {
     
-    var userFactory = require('../models/user');
-    var usersRepo = {};
-    var client = context.client;
+    let userFactory = require('../models/user');
+    let usersRepo = {};
+    let client = context.client;
     
     usersRepo.getUserBySciper = function (sciper, next) {
         client.executeQuery('(&(objectClass=posixAccount)(|(uniqueIdentifier=' + sciper + ')))', userFactory, context.options.modelsMapper.user, true, next);

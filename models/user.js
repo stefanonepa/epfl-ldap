@@ -1,11 +1,11 @@
 ﻿'use strict';
 module.exports = function User(ldapUserArray) {
-    var userModel = {};
+    let userModel = {};
     //TODO: populate the full model
     userModel.displayName = ldapUserArray[0].displayName;
     userModel.username = ldapUserArray[0].uid[0];
     userModel.sciper = ldapUserArray[0].uniqueIdentifier;
-    userModel.email = ldapUserArray[0].mail;
+    userModel.emails = Array();
     userModel.title = ldapUserArray[0].personalTitle;
     userModel.accreds = Array();
     userModel.memberOf = Array();
@@ -24,8 +24,17 @@ module.exports = function User(ldapUserArray) {
         } else userModel.memberOf = ldapUserArray[0].memberOf;
     }
     
-    ldapUserArray.forEach(function (userEntry, index, array) {
-        
+    ldapUserArray.map(function (userEntry) {
+        if (userEntry.mail != undefined) {
+            if (userEntry.mail instanceof Array) {
+                userEntry.mail.map(function(mail) {
+                    userModel.emails.push(mail);
+                });
+            } else {
+                userModel.emails.push(userEntry.mail);
+            }
+        }
+
         userModel.accreds.push(
             {
                 unitAcronym: userEntry.ou[0],

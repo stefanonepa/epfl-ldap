@@ -1,9 +1,8 @@
 ﻿'use strict';
 
-var omapper = require('o-mapper');
-
 module.exports = function () {
-    var mapper = {};
+    let omapper = require('o-mapper');
+    let mapper = {};
     mapper.userSchema;
     mapper.user = function (inputModel) {
         if (mapper.userSchema != undefined) {

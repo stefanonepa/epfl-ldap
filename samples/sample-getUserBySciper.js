@@ -3,7 +3,7 @@
 /*
  * Public
  */
-var publicLdapContext = require('../context')();
+let publicLdapContext = require('../context')();
 
 publicLdapContext.users.getUserBySciper(169419, function(err, data) {
     console.log(JSON.stringify(data, null, 2));
@@ -12,7 +12,7 @@ publicLdapContext.users.getUserBySciper(169419, function(err, data) {
 /*
  * Full
  */
-var fullLdapContext = require('../context')();
+let fullLdapContext = require('../context')();
 fullLdapContext.options.modelsMapper = fullLdapContext.viewModelsMappers.full;
 
 fullLdapContext.users.getUserBySciper(169419, function (err, data) {
@@ -22,14 +22,14 @@ fullLdapContext.users.getUserBySciper(169419, function (err, data) {
 /*
  * Custom
  */
-var customLdapContext = require('../context')();
-var customModelsMapper = customLdapContext.viewModelsMappers.custom;
+let customLdapContext = require('../context')();
+let customModelsMapper = customLdapContext.viewModelsMappers.custom;
 customModelsMapper.userSchema = {
     displayName: {
         key: 'displayName'
     },
-    email: {
-        key: 'email'
+    emails: {
+        key: 'emails'
     }
 };
 customLdapContext.options.modelsMapper = customModelsMapper;

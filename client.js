@@ -1,27 +1,26 @@
 ﻿'use strict';
-//var apiCache = new NodeCache({ stdTTL: 43200 }); //==> 1/2 day of ttl
 
 module.exports = function ldapClient(context) {
     
-    var ldap = require('ldapjs');
-    var client = ldap.createClient({
+    let ldap = require('ldapjs');
+    let client = ldap.createClient({
         url: 'ldap://ldap.epfl.ch',
         timeLimit: 1,
         sizeLimit: 10
     });
 
     function cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, next) { 
-        var opts = {
+        let opts = {
             filter: ldapQuery,
             scope: 'sub'
         };
         
         client.search(context.options.searchBase, opts, function (err, ldapRes) {
-            var groupedObject = {};
+            let groupedObject = {};
 
             ldapRes.on('searchEntry', function (entry) {
                 if (typeof entry.json != 'undefined') {
-                    var objectIdentifier = entry.object.uniqueIdentifier;
+                    let objectIdentifier = entry.object.uniqueIdentifier;
                     if (groupedObject[objectIdentifier] === undefined) {
                         groupedObject[objectIdentifier] = Array();
                     }
@@ -42,9 +41,9 @@ module.exports = function ldapClient(context) {
                 next(err, null);
             });
             ldapRes.on('end', function () {
-                var objectsGroup = Array();
+                let objectsGroup = Array();
                 
-                for (var userEntry in groupedObject) {
+                for (let userEntry in groupedObject) {
                     if (groupedObject.hasOwnProperty(userEntry)) {
                         if (isResultUniq) {
                             objectsGroup = modelMapper(objectFactory(groupedObject[userEntry]));

@@ -1,6 +1,6 @@
 ﻿'use strict';
 module.exports = function Unit(ldapUnitArray) {
-    var unitModel = {};
+    let unitModel = {};
 
     unitModel.cn = ldapUnitArray[0].cn;
     unitModel.dn = ldapUnitArray[0].dn;

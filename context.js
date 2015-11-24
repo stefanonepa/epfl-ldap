@@ -1,7 +1,7 @@
 ﻿'use strict';
 module.exports = function ldapContext(options) {
-    var NodeCache = require("node-cache");
-    var context = {};
+    let NodeCache = require("node-cache");
+    let context = {};
     context.client = require('./client')(context);
     context.options = require('./options')();
     context.users = require('./repositories/users')(context);

@@ -12,15 +12,15 @@ describe('Scipers', function () {
     });
 
     it('have two email', function(done) {
-        fullLdapContext.users.getUserBySciper(162314, function(err, data) {
-            assert.ok(true, "This shouldn't fail");
+        fullLdapContext.users.getUserBySciper(162314, function (err, data) {
+            assert.ok(data.emails.length === 2, "User have 2 email");
             done();
         });
     });
 
-    it('30 chars email', function (done) {
+    it('29 chars email', function (done) {
         fullLdapContext.users.getUserBySciper(214370, function (err, data) {
-            assert.ok(true, "This shouldn't fail");
+            assert.ok(data.emails[0].length === 29, "email adresse is long");
             done();
         });
     });

@@ -34,8 +34,8 @@ customModelsMapper.userSchema = {
     displayName: {
         key: 'displayName'
     },
-    email: {
-        key: 'email'
+    emails: {
+        key: 'emails'
     }
 };
 customLdapContext.options.modelsMapper = customModelsMapper;

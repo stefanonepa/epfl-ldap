@@ -3,7 +3,7 @@
 /*
  * Public
  */
-var publicLdapContext = require('../context')();
+let publicLdapContext = require('../context')();
 
 publicLdapContext.units.getUnitByName('enac-it', function(err, data) {
     console.log(JSON.stringify(data, null, 2));
@@ -13,7 +13,7 @@ publicLdapContext.units.getUnitByName('enac-it', function(err, data) {
 /*
  * Full
  */
-var fullLdapContext = require('../context')();
+let fullLdapContext = require('../context')();
 fullLdapContext.options.modelsMapper = fullLdapContext.viewModelsMappers.full;
 
 

@@ -1,9 +1,9 @@
 ﻿'use strict';
 module.exports = function (context) {
-    var unitFactory = require('../models/unit');
+    let unitFactory = require('../models/unit');
     
-    var unitsRepo = {};
-    var client = context.client;
+    let unitsRepo = {};
+    let client = context.client;
     
     unitsRepo.getUnitById = function (accountingNumber, next) {
         client.executeQuery('(&(objectClass=organizationalunit)(|(accountingNumber=' + accountingNumber + ')))', unitFactory, context.options.modelsMapper.unit, true, next);
