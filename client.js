@@ -1,5 +1,4 @@
 ﻿'use strict';
-var NodeCache = require("node-cache");
 //var apiCache = new NodeCache({ stdTTL: 43200 }); //==> 1/2 day of ttl
 
 module.exports = function ldapClient(context) {
@@ -36,10 +35,11 @@ module.exports = function ldapClient(context) {
             });
             ldapRes.on('error', function (err) {
                 console.error('error: ' + err.message);
-                next(err, groupedObject);
+                next(err, null);
             });
             ldapRes.on('timeout', function (err) {
                 console.error('error: ' + err.message);
+                next(err, null);
             });
             ldapRes.on('end', function () {
                 var objectsGroup = Array();
