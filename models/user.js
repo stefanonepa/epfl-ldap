@@ -18,10 +18,12 @@ module.exports = function User(ldapUserArray) {
         //       Username banla have only one group
         
         if (typeof ldapUserArray[0].memberOf == 'object') {
-            ldapUserArray[0].memberOf.forEach(function (groupName, index, groupArray) {
+            ldapUserArray[0].memberOf.map(function(groupName) {
                 userModel.memberOf.push(groupName);
             });
-        } else userModel.memberOf = ldapUserArray[0].memberOf;
+        } else {
+            userModel.memberOf = ldapUserArray[0].memberOf;
+        }
     }
     
     ldapUserArray.map(function (userEntry) {

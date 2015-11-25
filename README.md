@@ -3,7 +3,7 @@
 Simple wrapper to query the epfl ldap
 
 ## Usage
-```js
+```javascript
 /*
  * Public
  */
@@ -50,7 +50,6 @@ customLdapContext.users.getUserBySciper(169419, function (err, data) {
 ⚠ Carefull with the results formats (Object or Array)
 
 ⚠ this libarary *"try"* to use ES2015 (or ES6) capabilities, don't use it with nodejs under 4.x?
-
 
 
 ## TODO
