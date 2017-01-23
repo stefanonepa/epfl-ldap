@@ -7,7 +7,7 @@
   "author": "stefanonepa",
   "dependencies": {
     "epfl-exceptions": "^0.0.3",
-    "ldapjs": "^0.7.1",
+    "ldapjs": "^1.0.0",
     "node-cache": "^3.0.0",
     "o-mapper": "^0.1.2"
   },
