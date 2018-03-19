@@ -9,6 +9,10 @@ module.exports = function (context) {
         client.executeQuery('(&(objectClass=organizationalunit)(|(accountingNumber=' + accountingNumber + ')))', unitFactory, context.options.modelsMapper.unit, true, next);
     };
     
+    unitsRepo.getUnitByUniqueIdentifier = function (unitId, next) {
+        client.executeQuery('(&(objectClass=organizationalunit)(|(uniqueIdentifier=' + unitId + ')))', unitFactory, context.options.modelsMapper.unit, true, next);
+    };
+
     unitsRepo.getUnitByName = function (unit, next) {
         client.executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + ')))', unitFactory, context.options.modelsMapper.unit, true, next);
     };
