@@ -9,7 +9,8 @@
     "epfl-exceptions": "^0.0.3",
     "ldapjs": "^1.0.0",
     "node-cache": "^3.0.0",
-    "o-mapper": "^0.1.2"
+    "o-mapper": "^0.1.2",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "jshint": "^2.8.0",
@@ -31,6 +32,9 @@
   ],
   "license": "ISC",
   "scripts": {
-    "test": "mocha"
-  }
+    "test": "mocha",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
