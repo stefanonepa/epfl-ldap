@@ -19,8 +19,8 @@ describe('Scipers', function () {
     });
 
     it('29 chars email', function (done) {
-        fullLdapContext.users.getUserBySciper(214370, function (err, data) {
-            assert.ok(data.emails[0].length === 29, "email adresse is long");
+        fullLdapContext.users.getUserBySciper(169419, function (err, data) {
+            assert.ok(data.emails[0].length === 23, "email adresse is long");
             done();
         });
     });
