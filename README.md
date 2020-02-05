@@ -1,6 +1,6 @@
 ﻿# epfl-ldap
 
-Simple wrapper to query the epfl ldap
+Simple wrapper to query the EPFL LDAP.
 
 ## Usage
 ```javascript
@@ -51,9 +51,3 @@ customLdapContext.users.getUserBySciper(169419, function (err, data) {
 
 ⚠ this library *"try"* to use ES2015 (or ES6) capabilities, don't use it with nodejs under 4.x?
 
-
-## TODO
-
-- [ ] add tests
-- [ ] add samples
-- [ ] implement query validation with the package `epfl-exceptions`
