@@ -31,6 +31,6 @@
   ],
   "license": "ISC",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --exit"
   }
 }
