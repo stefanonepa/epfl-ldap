@@ -23,7 +23,7 @@ module.exports = function (context) {
     };
     
     unitsRepo.searchUnitByName = function (unit, next) {
-        client.executeQuery('(&(objectClass=organizationalunit)(|(ou=' + unit + '*)))', unitFactory, context.options.modelsMapper.unit, false, next);
+        client.executeQuery('(&(objectClass=organizationalunit)(|(ou=*' + unit + '*)))', unitFactory, context.options.modelsMapper.unit, false, next);
     };
      
     return unitsRepo;
