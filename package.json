@@ -1,29 +1,28 @@
 {
   "name": "epfl-ldap",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "epfl-ldap",
   "main": "context.js",
-  "homepage": "https://github.com/stefanonepa/epfl-ldap",
-  "author": "stefanonepa",
+  "homepage": "https://github.com/epfl-idevelop/epfl-ldap-js",
+  "author": "stefanonepa, idev-fsd",
   "dependencies": {
-    "epfl-exceptions": "^0.0.3",
-    "ldapjs": "^1.0.0",
-    "node-cache": "^3.0.0",
-    "o-mapper": "^0.1.2"
+    "ldapjs": "^1.0.2",
+    "node-cache": "^5.1.0",
+    "o-mapper": "^1.0.0"
   },
   "devDependencies": {
-    "jshint": "^2.8.0",
+    "jshint": "^2.11.0",
     "mocha": "*"
   },
   "bugs": {
-    "url": "https://github.com/stefanonepa/epfl-ldap/issues"
+    "url": "https://github.com/epfl-idevelop/epfl-ldap-js/issues"
   },
   "directories": {
     "test": "test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stefanonepa/epfl-ldap.git"
+    "url": "git+https://github.com/epfl-idevelop/epfl-ldap.git"
   },
   "keywords": [
     "epfl",
