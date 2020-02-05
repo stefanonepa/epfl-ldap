@@ -32,6 +32,7 @@ module.exports = function User(ldapUserArray) {
                 userEntry.mail.map(function(mail) {
                     userModel.emails.push(mail);
                 });
+                userModel.emails = [...new Set(userModel.emails)];
             } else {
                 userModel.emails.push(userEntry.mail);
             }
