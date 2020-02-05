@@ -22,7 +22,7 @@ module.exports = function (context) {
     };
     
     usersRepo.searchUserByUnitAcronym = function (unitAcronym, next) {
-        client.executeQuery('(&(objectClass=posixAccount)(ou=' + unitAcronym + '))', userFactory, context.options.modelsMapper.user, false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(ou=*' + unitAcronym + '*))', userFactory, context.options.modelsMapper.user, false, next);
     };
 
     /* The plural forms always return a list, regarding of whether the search
