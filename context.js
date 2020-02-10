@@ -9,7 +9,7 @@ module.exports = function ldapContext(options) {
     context.viewModelsMappers = require('./viewModels/mappers')();
 
     if (options == undefined || options.memoryCache == undefined ) {
-        context.memoryCache = new NodeCache({ stdTTL: 14400 }); // 4 hour of cache
+        context.memoryCache = new NodeCache({ stdTTL: 14400, enableLegacyCallbacks: true }); // 4 hour of cache
     } else {
         context.memoryCache = new NodeCache(options.memoryCache);
     }
