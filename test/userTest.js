@@ -64,6 +64,29 @@ describe('User::search', function () {
 
 describe('Users::get', function () {
 
+    it('getUsersBySciper should get Kermit La Grenouille', function (done) {
+        fullLdapContext.users.getUsersBySciper(133134, function (err, data) {
+            // Note: it should be an array...
+            assert.equal(data.displayName, 'Kermit La Grenouille');
+            done();
+        });
+    });
+
+    it('getUsersByName should get Kermit La Grenouille', function (done) {
+        fullLdapContext.users.getUsersByName('Kermit La Grenouille', function (err, data) {
+            // Note: it should be an array...
+            assert.equal(data.displayName, 'Kermit La Grenouille');
+            done();
+        });
+    });
+
+    it('getUsersByPhone should get 169419', function (done) {
+        fullLdapContext.users.getUsersByPhone('35455', function (err, data) {
+            assert.equal(data[0].sciper, '169419');
+            done();
+        });
+    });
+
     it('getUsersByUnitAcronym should search all members of IDEV-FSD, including Kermit', function (done) {
         fullLdapContext.users.getUsersByUnitAcronym('IDEV-FSD', function (err, data) {
             let k = data.filter(obj => {
