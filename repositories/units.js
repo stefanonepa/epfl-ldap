@@ -1,7 +1,7 @@
 ﻿'use strict';
 module.exports = function (context) {
     let unitFactory = require('../models/unit');
-    
+
     let unitsRepo = {};
     let client = context.client;
 
@@ -25,6 +25,6 @@ module.exports = function (context) {
     unitsRepo.searchUnitByName = function (unit, next) {
         client.executeQuery('(&(objectClass=organizationalunit)(ou=*' + unit + '*))', unitFactory, context.options.modelsMapper.unit, false, next);
     };
-     
+
     return unitsRepo;
 };
