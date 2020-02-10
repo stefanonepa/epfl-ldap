@@ -10,7 +10,7 @@ module.exports = function (context) {
     };
     
     usersRepo.getUserByName = function (name, next) {
-        client.executeQuery('(&(objectClass=posixAccount)(cn=' + name + '))', userFactory, context.options.modelsMapper.user, false, next);
+        client.executeQuery('(&(objectClass=posixAccount)(cn=' + name + '))', userFactory, context.options.modelsMapper.user, true, next);
     };
     
     usersRepo.searchUserByName = function (name, next) {
