@@ -32,9 +32,17 @@ describe('Sciper', function () {
         });
     });
 
+
     it('searchUserByName should search Kermit La Grenouille', function (done) {
         fullLdapContext.users.searchUserByName('Kermit', function (err, data) {
             assert.equal(data[0].displayName, 'Kermit La Grenouille');
+            done();
+        });
+    });
+
+    it('searchUserByPhone should return 169419', function (done) {
+        fullLdapContext.users.searchUserByPhone('35455', function (err, data) {
+            assert.equal(data[0].sciper, '169419');
             done();
         });
     });
@@ -48,6 +56,7 @@ describe('Sciper', function () {
             done();
         });
     });
+
 
     it('getUsersByUnitAcronym should search all members of IDEV-FSD, including Kermit', function (done) {
         fullLdapContext.users.getUsersByUnitAcronym('IDEV-FSD', function (err, data) {
