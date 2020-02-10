@@ -2,7 +2,7 @@
 var fullLdapContext = require('../context')();
 fullLdapContext.options.modelsMapper = fullLdapContext.viewModelsMappers.full;
 
-describe('Sciper', function () {
+describe('User::get', function () {
 
     it('getUserBySciper should get Kermit La Grenouille', function (done) {
         fullLdapContext.users.getUserBySciper(133134, function (err, data) {
@@ -27,11 +27,14 @@ describe('Sciper', function () {
 
     it('getUserByName should find Kermit La Grenouille', function (done) {
         fullLdapContext.users.getUserByName('Kermit La Grenouille', function (err, data) {
-            assert.equal(data[0].displayName, 'Kermit La Grenouille');
+            assert.equal(data.displayName, 'Kermit La Grenouille');
             done();
         });
     });
 
+});
+
+describe('User::search', function () {
 
     it('searchUserByName should search Kermit La Grenouille', function (done) {
         fullLdapContext.users.searchUserByName('Kermit', function (err, data) {
@@ -57,6 +60,9 @@ describe('Sciper', function () {
         });
     });
 
+});
+
+describe('Users::get', function () {
 
     it('getUsersByUnitAcronym should search all members of IDEV-FSD, including Kermit', function (done) {
         fullLdapContext.users.getUsersByUnitAcronym('IDEV-FSD', function (err, data) {
