@@ -10,11 +10,11 @@ publicLdapContext.units.getUnitByName('enac-it', function(err, data) {
 });
 
 publicLdapContext.units.getUnitById('0184', function(err, data) {
-  console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(data, null, 2));
 });
 
 publicLdapContext.units.getUnitByUniqueIdentifier(10208, function(err, data) {
-  console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(data, null, 2));
 });
 
 
