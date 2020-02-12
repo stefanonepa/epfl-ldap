@@ -4,7 +4,7 @@ module.exports = function (context) {
     let userFactory = require('../models/user');
     let usersRepo = {};
     let client = context.client;
-    
+
     usersRepo.getUserBySciper = function (sciper, next) {
         client.executeQuery('(&(objectClass=posixAccount)(uniqueIdentifier=' + sciper + '))', userFactory, context.options.modelsMapper.user, true, next);
     };

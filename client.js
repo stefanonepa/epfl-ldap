@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 module.exports = function ldapClient(context) {
-    
+
     let ldap = require('ldapjs');
     let client = ldap.createClient({
         url: 'ldap://ldap.epfl.ch',
@@ -14,7 +14,7 @@ module.exports = function ldapClient(context) {
             filter: ldapQuery,
             scope: 'sub'
         };
-        
+
         client.search(context.options.searchBase, opts, function (err, ldapRes) {
             let groupedObject = {};
 
@@ -42,7 +42,7 @@ module.exports = function ldapClient(context) {
             });
             ldapRes.on('end', function () {
                 let objectsGroup = Array();
-                
+
                 for (let userEntry in groupedObject) {
                     if (groupedObject.hasOwnProperty(userEntry)) {
                         if (isResultUniq) {

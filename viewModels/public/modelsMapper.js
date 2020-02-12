@@ -3,7 +3,7 @@
 module.exports = function () {
     let omapper = require('o-mapper');
     let mapper = {};
-    
+
     mapper.user = function(inputModel) {
         let schema = {
             displayName: {
@@ -22,10 +22,10 @@ module.exports = function () {
                 key: 'accreds'
             }
         };
-        
+
         return omapper(inputModel, schema);
     }
-    
+
     mapper.unit = function (inputModel) {
         let schema = {
             cn: {
@@ -47,7 +47,7 @@ module.exports = function () {
                 key: 'address'
             }
         };
-        
+
         return omapper(inputModel, schema);
     }
 

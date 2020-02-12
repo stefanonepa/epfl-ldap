@@ -20,6 +20,6 @@ module.exports = function () {
             throw new Error("No schema for unit");
         }
     }
-    
+
     return mapper;
 }
