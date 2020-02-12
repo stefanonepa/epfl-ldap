@@ -3,7 +3,7 @@
   "version": "0.9.0",
   "description": "epfl-ldap",
   "main": "context.js",
-  "homepage": "https://github.com/epfl-idevelop/epfl-ldap-js",
+  "homepage": "https://github.com/epfl-si/epfl-ldap-js",
   "author": "stefanonepa, idev-fsd",
   "dependencies": {
     "ldapjs": "^1.0.2",
@@ -15,14 +15,14 @@
     "mocha": "*"
   },
   "bugs": {
-    "url": "https://github.com/epfl-idevelop/epfl-ldap-js/issues"
+    "url": "https://github.com/epfl-si/epfl-ldap-js/issues"
   },
   "directories": {
     "test": "test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/epfl-idevelop/epfl-ldap-js.git"
+    "url": "git+https://github.com/epfl-si/epfl-ldap-js.git"
   },
   "keywords": [
     "epfl",
