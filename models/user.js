@@ -29,10 +29,9 @@ module.exports = function User(ldapUserArray) {
     ldapUserArray.map(function (userEntry) {
         if (userEntry.mail != undefined) {
             if (userEntry.mail instanceof Array) {
-                userEntry.mail.map(function(mail) {
-                    userModel.emails.push(mail);
-                });
-                userModel.emails = [...new Set(userModel.emails)];
+                // @stefanonepa suggestion's:
+                // https://github.com/stefanonepa/epfl-ldap/pull/4#discussion_r375255479
+                userModel.emails = [...new Set(userEntry.mail)];
             } else {
                 userModel.emails.push(userEntry.mail);
             }
