@@ -10,9 +10,8 @@ module.exports = function User(ldapUserArray) {
     userModel.accreds = Array();
     userModel.memberOf = Array();
     userModel.photoUrl = 'http://people.epfl.ch/cgi-bin/people/getPhoto?id=' + userModel.sciper;
-    
+
     if (ldapUserArray[0].memberOf !== undefined) {
-        
         // Note: if only one group, typeof string
         //       if groups, typeof object.
         //       Username banla have only one group
@@ -25,14 +24,12 @@ module.exports = function User(ldapUserArray) {
             userModel.memberOf = ldapUserArray[0].memberOf;
         }
     }
-    
+
     ldapUserArray.map(function (userEntry) {
         if (userEntry.mail != undefined) {
             if (userEntry.mail instanceof Array) {
-                userEntry.mail.map(function(mail) {
-                    userModel.emails.push(mail);
-                });
-                userModel.emails = [...new Set(userModel.emails)];
+                // This remove duplicated entries and allow more than one email
+                userModel.emails = [...new Set(userEntry.mail)];
             } else {
                 userModel.emails.push(userEntry.mail);
             }
@@ -50,8 +47,8 @@ module.exports = function User(ldapUserArray) {
             }
         );
     });
-    
-    //All ldap properties
+
+    // All ldap properties
     userModel.optionalProperties = ldapUserArray;
 
     return userModel;
