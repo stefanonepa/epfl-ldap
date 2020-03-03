@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 module.exports = function ldapClient(context) {
-    
+
     let ldap = require('ldapjs');
     let client = ldap.createClient({
         url: 'ldap://ldap.epfl.ch',
@@ -14,7 +14,7 @@ module.exports = function ldapClient(context) {
             filter: ldapQuery,
             scope: 'sub'
         };
-        
+
         client.search(context.options.searchBase, opts, function (err, ldapRes) {
             let groupedObject = {};
 
@@ -42,7 +42,7 @@ module.exports = function ldapClient(context) {
             });
             ldapRes.on('end', function () {
                 let objectsGroup = Array();
-                
+
                 for (let userEntry in groupedObject) {
                     if (groupedObject.hasOwnProperty(userEntry)) {
                         if (isResultUniq) {
@@ -57,26 +57,20 @@ module.exports = function ldapClient(context) {
         });
     }
 
-    client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {  
-        context.memoryCache.get(ldapQuery, function (err, data) {
-            if (!err) {
-                if (data == undefined) {
-                    cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(err, data) {
-                        context.memoryCache.set(ldapQuery, data, function (err, success) {
-                            if (!err && success) {
-                                next(null, data);
-                            } else {
-                                next({ Error: "aararrggghhh!" }, null);
-                            }
-                        });
-                    });
-                } else {
+    client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
+        let data = context.memoryCache.get(ldapQuery+isResultUniq)
+        if (data == undefined) {
+            cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(err, data) {
+                let success = context.memoryCache.set(ldapQuery+isResultUniq, data);
+                if (success) {
                     next(null, data);
+                } else {
+                    next({ Error: "Error setting cache" }, null);
                 }
-            } else {
-                next({ Error: "aararrggghhh!" }, null);
-            }
-        });
+            });
+        } else {
+            next(null, data);
+        }
     };
 
     return client;
