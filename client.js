@@ -1,5 +1,7 @@
 ﻿'use strict';
 
+const _executeQueryPromise = require('./ldapjs-promise');
+
 function _executeQuery(client, searchBase, ldapQuery, next) {
     _executeQueryPromise(client, searchBase, ldapQuery).then(
         (data) => { 
@@ -11,45 +13,6 @@ function _executeQuery(client, searchBase, ldapQuery, next) {
         }
     )
 }
-
-function _executeQueryPromise(client, searchBase, ldapQuery) { 
-    let opts = {
-        filter: ldapQuery,
-        scope: 'sub'
-    };
-
-    return new Promise((resolve, reject) => {
-        client.search(searchBase, opts, function (err, ldapRes) {
-            let groupedObject = {};
-            ldapRes.on('searchEntry', function (entry) {
-                if (typeof entry.json != 'undefined') {
-                    let objectIdentifier = entry.object.uniqueIdentifier;
-                    if (groupedObject[objectIdentifier] === undefined) {
-                        groupedObject[objectIdentifier] = Array();
-                    }
-                    groupedObject[objectIdentifier].push(entry.object);
-                } else {
-                    resolve(groupedObject);
-                }
-            });
-            ldapRes.on('searchReference', function (referral) {
-                //console.log('referral: ' + referral.uris.join());
-            });
-            ldapRes.on('error', function (err) {
-                console.error('error: ' + err.message);
-                reject(err);
-            });
-            ldapRes.on('timeout', function (err) {
-                console.error('error: ' + err.message);
-                reject(err);
-            });
-            ldapRes.on('end', function () {
-                resolve(groupedObject);
-            });
-        });
-    });
-}
-  
 
 module.exports = function ldapClient(context) {
 
@@ -64,7 +27,11 @@ module.exports = function ldapClient(context) {
         let objectsGroup = context.memoryCache.get(ldapQuery+isResultUniq)
         if (objectsGroup == undefined) {
             let searchBase = context.options.searchBase;
-            _executeQuery(client, searchBase, ldapQuery, function(err, data) {
+            let opts = {
+                filter: ldapQuery,
+                scope: 'sub'
+            };
+            _executeQuery(client, searchBase, opts, function(err, data) {
 
                 let objectsGroup = Array();
 
