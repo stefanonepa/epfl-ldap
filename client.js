@@ -1,6 +1,7 @@
 ﻿'use strict';
 
-function _executeQuery(client, searchBase, ldapQuery, objectFactory, modelMapper, isResultUniq, next) { 
+
+function _executeQuery(client, searchBase, ldapQuery, next) { 
   let opts = {
       filter: ldapQuery,
       scope: 'sub'
@@ -32,18 +33,8 @@ function _executeQuery(client, searchBase, ldapQuery, objectFactory, modelMapper
           next(err, null);
       });
       ldapRes.on('end', function () {
-          let objectsGroup = Array();
-
-          for (let userEntry in groupedObject) {
-              if (groupedObject.hasOwnProperty(userEntry)) {
-                  if (isResultUniq) {
-                      objectsGroup = modelMapper(objectFactory(groupedObject[userEntry]));
-                  } else {
-                      objectsGroup.push(modelMapper(objectFactory(groupedObject[userEntry])));
-                  }
-              }
-          }
-          next(null, objectsGroup);
+          
+          next(null, groupedObject);
       });
   });
 }
@@ -58,19 +49,32 @@ module.exports = function ldapClient(context) {
     });
 
     client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
-        let data = context.memoryCache.get(ldapQuery+isResultUniq)
-        if (data == undefined) {
+        let objectsGroup = context.memoryCache.get(ldapQuery+isResultUniq)
+        if (objectsGroup == undefined) {
             let searchBase = context.options.searchBase;
-            _executeQuery(client, searchBase, ldapQuery, objectFactory, modelMapper, isResultUniq, function(err, data) {
-                let success = context.memoryCache.set(ldapQuery+isResultUniq, data);
+            _executeQuery(client, searchBase, ldapQuery, function(err, data) {
+
+                let objectsGroup = Array();
+
+                for (let userEntry in data) {
+                    if (data.hasOwnProperty(userEntry)) {
+                        if (isResultUniq) {
+                            objectsGroup = modelMapper(objectFactory(data[userEntry]));
+                        } else {
+                            objectsGroup.push(modelMapper(objectFactory(data[userEntry])));
+                        }
+                    }
+                }
+
+                let success = context.memoryCache.set(ldapQuery+isResultUniq, objectsGroup);
                 if (success) {
-                    next(null, data);
+                    next(null, objectsGroup);
                 } else {
                     next({ Error: "Error setting cache" }, null);
                 }
             });
         } else {
-            next(null, data);
+            next(null, objectsGroup);
         }
     };
 
