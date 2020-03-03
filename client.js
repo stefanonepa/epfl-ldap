@@ -1,43 +1,55 @@
 ﻿'use strict';
 
-
-function _executeQuery(client, searchBase, ldapQuery, next) { 
-  let opts = {
-      filter: ldapQuery,
-      scope: 'sub'
-  };
-
-  client.search(searchBase, opts, function (err, ldapRes) {
-      let groupedObject = {};
-
-      ldapRes.on('searchEntry', function (entry) {
-          if (typeof entry.json != 'undefined') {
-              let objectIdentifier = entry.object.uniqueIdentifier;
-              if (groupedObject[objectIdentifier] === undefined) {
-                  groupedObject[objectIdentifier] = Array();
-              }
-              groupedObject[objectIdentifier].push(entry.object);
-          } else {
-              next(null, groupedObject);
-          }
-      });
-      ldapRes.on('searchReference', function (referral) {
-          //console.log('referral: ' + referral.uris.join());
-      });
-      ldapRes.on('error', function (err) {
-          console.error('error: ' + err.message);
-          next(err, null);
-      });
-      ldapRes.on('timeout', function (err) {
-          console.error('error: ' + err.message);
-          next(err, null);
-      });
-      ldapRes.on('end', function () {
-          
-          next(null, groupedObject);
-      });
-  });
+function _executeQuery(client, searchBase, ldapQuery, next) {
+    _executeQueryPromise(client, searchBase, ldapQuery).then(
+        (data) => { 
+            next(null, data);
+        }
+    ).catch(
+        (err) => { 
+            next(err, null);
+        }
+    )
 }
+
+function _executeQueryPromise(client, searchBase, ldapQuery) { 
+    let opts = {
+        filter: ldapQuery,
+        scope: 'sub'
+    };
+
+    return new Promise((resolve, reject) => {
+        client.search(searchBase, opts, function (err, ldapRes) {
+            let groupedObject = {};
+            ldapRes.on('searchEntry', function (entry) {
+                if (typeof entry.json != 'undefined') {
+                    let objectIdentifier = entry.object.uniqueIdentifier;
+                    if (groupedObject[objectIdentifier] === undefined) {
+                        groupedObject[objectIdentifier] = Array();
+                    }
+                    groupedObject[objectIdentifier].push(entry.object);
+                } else {
+                    resolve(groupedObject);
+                }
+            });
+            ldapRes.on('searchReference', function (referral) {
+                //console.log('referral: ' + referral.uris.join());
+            });
+            ldapRes.on('error', function (err) {
+                console.error('error: ' + err.message);
+                reject(err);
+            });
+            ldapRes.on('timeout', function (err) {
+                console.error('error: ' + err.message);
+                reject(err);
+            });
+            ldapRes.on('end', function () {
+                resolve(groupedObject);
+            });
+        });
+    });
+}
+  
 
 module.exports = function ldapClient(context) {
 
