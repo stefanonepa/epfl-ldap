@@ -71,6 +71,9 @@ module.exports = function ldapClient(context) {
         } else {
             next(null, data);
         }
+        // Closes the LDAP connection
+        client.unbind();
+        client.destroy();
     };
 
     return client;
