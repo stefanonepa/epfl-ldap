@@ -43,7 +43,18 @@ customLdapContext.options.modelsMapper = customModelsMapper;
 customLdapContext.users.getUserBySciper(169419, function (err, data) {
     console.log(JSON.stringify(data, null, 2));
 });
+
+
+/*
+ * Custom LDAP search base
+ */
+var publicLdapContext = require('epfl-ldap')();
+publicLdapContext.options.searchBase = 'ou=si-idev,ou=si,o=epfl,c=ch'; // <- specify search base here
+publicLdapContext.users.getUserBySciper(169419, function(err, data) {
+ console.log(JSON.stringify(data, null, 2));
+});
 ```
+
 
 ## Notes
 
