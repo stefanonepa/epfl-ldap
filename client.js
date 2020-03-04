@@ -1,5 +1,19 @@
 ﻿'use strict';
 
+const _executeQueryPromise = require('./ldapjs-promise');
+
+function _executeQuery(client, searchBase, ldapQuery, next) {
+    _executeQueryPromise(client, searchBase, ldapQuery).then(
+        (data) => { 
+            next(null, data);
+        }
+    ).catch(
+        (err) => { 
+            next(err, null);
+        }
+    )
+}
+
 module.exports = function ldapClient(context) {
 
     let ldap = require('ldapjs');
@@ -9,71 +23,38 @@ module.exports = function ldapClient(context) {
         sizeLimit: 10
     });
 
-    function cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, next) { 
-        let opts = {
-            filter: ldapQuery,
-            scope: 'sub'
-        };
+    client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
+        let objectsGroup = context.memoryCache.get(ldapQuery+isResultUniq)
+        if (objectsGroup == undefined) {
+            let searchBase = context.options.searchBase;
+            let opts = {
+                filter: ldapQuery,
+                scope: 'sub'
+            };
+            _executeQuery(client, searchBase, opts, function(err, data) {
 
-        client.search(context.options.searchBase, opts, function (err, ldapRes) {
-            let groupedObject = {};
-
-            ldapRes.on('searchEntry', function (entry) {
-                if (typeof entry.json != 'undefined') {
-                    let objectIdentifier = entry.object.uniqueIdentifier;
-                    if (groupedObject[objectIdentifier] === undefined) {
-                        groupedObject[objectIdentifier] = Array();
-                    }
-                    groupedObject[objectIdentifier].push(entry.object);
-                } else {
-                    next(null, groupedObject);
-                }
-            });
-            ldapRes.on('searchReference', function (referral) {
-                //console.log('referral: ' + referral.uris.join());
-            });
-            ldapRes.on('error', function (err) {
-                console.error('error: ' + err.message);
-                next(err, null);
-            });
-            ldapRes.on('timeout', function (err) {
-                console.error('error: ' + err.message);
-                next(err, null);
-            });
-            ldapRes.on('end', function () {
                 let objectsGroup = Array();
 
-                for (let userEntry in groupedObject) {
-                    if (groupedObject.hasOwnProperty(userEntry)) {
+                for (let userEntry in data) {
+                    if (data.hasOwnProperty(userEntry)) {
                         if (isResultUniq) {
-                            objectsGroup = modelMapper(objectFactory(groupedObject[userEntry]));
+                            objectsGroup = modelMapper(objectFactory(data[userEntry]));
                         } else {
-                            objectsGroup.push(modelMapper(objectFactory(groupedObject[userEntry])));
+                            objectsGroup.push(modelMapper(objectFactory(data[userEntry])));
                         }
                     }
                 }
-                next(null, objectsGroup);
-            });
-        });
-    }
 
-    client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
-        let data = context.memoryCache.get(ldapQuery+isResultUniq)
-        if (data == undefined) {
-            cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(err, data) {
-                let success = context.memoryCache.set(ldapQuery+isResultUniq, data);
+                let success = context.memoryCache.set(ldapQuery+isResultUniq, objectsGroup);
                 if (success) {
-                    next(null, data);
+                    next(null, objectsGroup);
                 } else {
                     next({ Error: "Error setting cache" }, null);
                 }
             });
         } else {
-            next(null, data);
+            next(null, objectsGroup);
         }
-        // Closes the LDAP connection
-        client.unbind();
-        client.destroy();
     };
 
     return client;
