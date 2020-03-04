@@ -6,9 +6,11 @@
   "homepage": "https://github.com/epfl-si/epfl-ldap-js",
   "author": "stefanonepa, idev-fsd",
   "dependencies": {
+    "debug": "^4.1.1",
     "ldapjs": "^1.0.2",
     "node-cache": "^5.1.0",
-    "o-mapper": "^1.0.0"
+    "o-mapper": "^1.0.0",
+    "promise-semaphore": "^0.2.8"
   },
   "devDependencies": {
     "jshint": "^2.11.0",
@@ -30,6 +32,9 @@
   ],
   "license": "ISC",
   "scripts": {
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "sample1": "node samples/sample-getUnit.js",
+    "sample2": "node samples/sample-getUserBySciper.js",
+    "debug": "DEBUG=test,connection-pool node test.js"
   }
 }
