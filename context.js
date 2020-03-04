@@ -2,8 +2,14 @@
 let NodeCache = require("node-cache");
 module.exports = function ldapContext(options) {
     let context = {};
+    // Define the pool size
+    if (options == undefined || options.poolSize == undefined ) {
+        context.poolSize = 3;
+    } else {
+        context.poolSize = options.poolSize;
+    }
+    context.options = require('./options')(options);
     context.client = require('./client')(context);
-    context.options = require('./options')();
     context.users = require('./repositories/users')(context);
     context.units = require('./repositories/units')(context);
     context.viewModelsMappers = require('./viewModels/mappers')();

@@ -1,75 +1,77 @@
 ﻿'use strict';
 
+const _executeQueryPromise = require('./ldapjs-promise');
+const ConnectionPool = require('./connection-pool.js');
+
+function _executeQueryInPool(pool, searchBase, ldapQuery, next) {
+    pool.add(function(client) {
+        _executeQueryPromise(client, searchBase, ldapQuery)
+            .then(
+                (data) => {
+                    next(null, data);
+                }
+            )
+            .catch(
+                (err) => {
+                    next(err, null);
+                }
+            )
+        });
+}
+
+function createPool(clientFactory, opts) {
+    const pool = new ConnectionPool(
+        opts.poolSize,
+        clientFactory,
+        (client) => client.unbind()
+    );
+    return pool;
+}
+
 module.exports = function ldapClient(context) {
 
     let ldap = require('ldapjs');
-    let client = ldap.createClient({
-        url: 'ldap://ldap.epfl.ch',
-        timeLimit: 1,
-        sizeLimit: 10
-    });
+    let pool = createPool(() => ldap.createClient({
+                url: 'ldap://ldap.epfl.ch',
+                timeLimit: 1,
+                sizeLimit: 10
+            }),
+            { poolSize : context.poolSize }
+    );
 
-    function cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, next) { 
-        let opts = {
-            filter: ldapQuery,
-            scope: 'sub'
-        };
+    const client = {
+        executeQuery: function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
+            let objectsGroup = context.memoryCache.get(ldapQuery+isResultUniq)
+            if (objectsGroup == undefined) {
+                let searchBase = context.options.searchBase;
+                let opts = {
+                    filter: ldapQuery,
+                    scope: 'sub'
+                };
+                _executeQueryInPool(pool, searchBase, opts, function(err, data) {
 
-        client.search(context.options.searchBase, opts, function (err, ldapRes) {
-            let groupedObject = {};
+                    let objectsGroup = Array();
 
-            ldapRes.on('searchEntry', function (entry) {
-                if (typeof entry.json != 'undefined') {
-                    let objectIdentifier = entry.object.uniqueIdentifier;
-                    if (groupedObject[objectIdentifier] === undefined) {
-                        groupedObject[objectIdentifier] = Array();
-                    }
-                    groupedObject[objectIdentifier].push(entry.object);
-                } else {
-                    next(null, groupedObject);
-                }
-            });
-            ldapRes.on('searchReference', function (referral) {
-                //console.log('referral: ' + referral.uris.join());
-            });
-            ldapRes.on('error', function (err) {
-                console.error('error: ' + err.message);
-                next(err, null);
-            });
-            ldapRes.on('timeout', function (err) {
-                console.error('error: ' + err.message);
-                next(err, null);
-            });
-            ldapRes.on('end', function () {
-                let objectsGroup = Array();
-
-                for (let userEntry in groupedObject) {
-                    if (groupedObject.hasOwnProperty(userEntry)) {
-                        if (isResultUniq) {
-                            objectsGroup = modelMapper(objectFactory(groupedObject[userEntry]));
-                        } else {
-                            objectsGroup.push(modelMapper(objectFactory(groupedObject[userEntry])));
+                    for (let userEntry in data) {
+                        if (data.hasOwnProperty(userEntry)) {
+                            if (isResultUniq) {
+                                objectsGroup = modelMapper(objectFactory(data[userEntry]));
+                            } else {
+                                objectsGroup.push(modelMapper(objectFactory(data[userEntry])));
+                            }
                         }
                     }
-                }
-                next(null, objectsGroup);
-            });
-        });
-    }
 
-    client.executeQuery = function(ldapQuery, objectFactory, modelMapper, isResultUniq, next) {
-        let data = context.memoryCache.get(ldapQuery+isResultUniq)
-        if (data == undefined) {
-            cacheQuery(ldapQuery, objectFactory, modelMapper, isResultUniq, function(err, data) {
-                let success = context.memoryCache.set(ldapQuery+isResultUniq, data);
-                if (success) {
-                    next(null, data);
-                } else {
-                    next({ Error: "Error setting cache" }, null);
-                }
-            });
-        } else {
-            next(null, data);
+                    let success = context.memoryCache.set(ldapQuery+isResultUniq, objectsGroup);
+                    if (success) {
+                        next(null, objectsGroup);
+                    } else {
+                        next({ Error: "Error setting cache" }, null);
+                    }
+                });
+            } else {
+                next(null, objectsGroup);
+            }
         }
     };
 

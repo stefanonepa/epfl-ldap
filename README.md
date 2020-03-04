@@ -43,7 +43,20 @@ customLdapContext.options.modelsMapper = customModelsMapper;
 customLdapContext.users.getUserBySciper(169419, function (err, data) {
     console.log(JSON.stringify(data, null, 2));
 });
+
+
+/*
+ * Custom Options
+ */
+var publicLdapContext = require('epfl-ldap')({
+        searchBase:'ou=si-idev,ou=si,o=epfl,c=ch',
+        poolSize: 4
+    });
+publicLdapContext.users.getUserBySciper(169419, function(err, data) {
+ console.log(JSON.stringify(data, null, 2));
+});
 ```
+
 
 ## Notes
 
