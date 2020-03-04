@@ -19,24 +19,24 @@ function _executeQueryInPool(pool, searchBase, ldapQuery, next) {
         });
 }
 
-function createPool (clientFactory, opts) {
+function createPool(clientFactory, opts) {
     const pool = new ConnectionPool(
         opts.poolSize,
         clientFactory,
         (client) => client.unbind()
     );
-  return pool;  // TODO: improve
+    return pool;
 }
 
 module.exports = function ldapClient(context) {
 
     let ldap = require('ldapjs');
     let pool = createPool(() => ldap.createClient({
-            url: 'ldap://ldap.epfl.ch',
-            timeLimit: 1,
-            sizeLimit: 10
-        }),
-        { poolSize : context.poolSize || 3 }
+                url: 'ldap://ldap.epfl.ch',
+                timeLimit: 1,
+                sizeLimit: 10
+            }),
+            { poolSize : context.poolSize }
     );
 
     const client = {

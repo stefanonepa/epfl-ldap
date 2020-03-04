@@ -46,10 +46,12 @@ customLdapContext.users.getUserBySciper(169419, function (err, data) {
 
 
 /*
- * Custom LDAP search base
+ * Custom Options
  */
-var publicLdapContext = require('epfl-ldap')();
-publicLdapContext.options.searchBase = 'ou=si-idev,ou=si,o=epfl,c=ch'; // <- specify search base here
+var publicLdapContext = require('epfl-ldap')({
+        searchBase:'ou=si-idev,ou=si,o=epfl,c=ch',
+        poolSize: 4
+    });
 publicLdapContext.users.getUserBySciper(169419, function(err, data) {
  console.log(JSON.stringify(data, null, 2));
 });
