@@ -1,8 +1,8 @@
-const debug = require('debug')('test');
+const debug = require('debug')('connection-pool');
 
-const ConnectionPool = require('./connection-pool.js');
+const ConnectionPool = require('../connection-pool.js');
 const ldap = require('ldapjs');
-const executeQueryPromise = require('./ldapjs-promise');
+const executeQueryPromise = require('../ldapjs-promise');
 
 
 const pool = new ConnectionPool(

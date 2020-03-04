@@ -35,6 +35,6 @@
     "test": "mocha --exit",
     "sample1": "node samples/sample-getUnit.js",
     "sample2": "node samples/sample-getUserBySciper.js",
-    "debug": "DEBUG=test,connection-pool node test.js"
+    "sample3": "DEBUG=connection-pool node samples/sample-connectionPool.js"
   }
 }
