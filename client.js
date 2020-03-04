@@ -3,17 +3,6 @@
 const _executeQueryPromise = require('./ldapjs-promise');
 const ConnectionPool = require('./connection-pool.js');
 
-function _executeQuery(client, searchBase, ldapQuery, next) {
-    _executeQueryPromise(client, searchBase, ldapQuery).then(
-        (data) => {
-            next(null, data);
-        }
-    ).catch(
-        (err) => {
-            next(err, null);
-        }
-    )
-}
 function _executeQueryInPool(pool, searchBase, ldapQuery, next) {
     pool.add(function(client) {
         _executeQueryPromise(client, searchBase, ldapQuery)
