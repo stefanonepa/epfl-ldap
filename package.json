@@ -10,7 +10,7 @@
     "ldapjs": "^1.0.0",
     "node-cache": "^3.0.0",
     "o-mapper": "^0.1.2",
-    "snyk": "^1.189.0"
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "jshint": "^2.8.0",
